@@ -41,86 +41,58 @@ using System.Threading.Tasks;
 namespace SimpleLogManager
 {
     /// <summary>
-    /// An implementaiton of the SimpleLogManager
+    /// Handles the loading and parsing of configuration files
     /// </summary>
-    public class SimpleLogManagerCLI
+    public class SLMConfigFactory
     {
         RawConfigParser RawConfigParser { get; set; }
         ConfigOptionsFactory<BackUpCondition> BackUpOptionsFactory { get; set; }
         ConfigOptionsFactory<MaintenanceCondition> MaintenanceOptionsFactory { get; set; }
-        BackUpHandler BackUpHandler { get; set; }
-        BackUpMaintenanceHandler BackUpMaintenanceHandler { get; set; }
-        string ConfigPath { get; }
-        public SimpleLogManagerCLI(
-            ConfigOptionsFactory<BackUpCondition> backUpOptionsFactory,
-            ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory,
-            BackUpHandler backUpHandler, BackUpMaintenanceHandler backUpMaintenanceHandler)
+
+        private string DefaultConfigPath()
         {
-            BackUpHandler = backUpHandler;
-            BackUpMaintenanceHandler = backUpMaintenanceHandler;
-            BackUpOptionsFactory = backUpOptionsFactory;
-            MaintenanceOptionsFactory = maintenanceOptionsFactory;
-            ConfigPath = Path.Combine(
+            return Path.Combine(
                 Directory.GetCurrentDirectory(),
                 "config.json"
             );
+        }
+
+        public SLMConfigFactory(
+            ConfigOptionsFactory<BackUpCondition> backUpOptionsFactory,
+            ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory,
+        {
+            BackUpOptionsFactory = backUpOptionsFactory;
+            MaintenanceOptionsFactory = maintenanceOptionsFactory;
             RawConfigParser = new(BackUpOptionsFactory, MaintenanceOptionsFactory);
         }
 
-        public SimpleLogManagerCLI(
+        public SLMConfigFactory(
             ConfigOptionsFactory<BackUpCondition> backUpOptionsFactory,
             ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory,
-            BackUpHandler backUpHandler, BackUpMaintenanceHandler backUpMaintenanceHandler,
-            RawConfigParser? rawConfigPraser)
+            RawConfigParser? rawConfigParser)
         {
-            BackUpHandler = backUpHandler;
-            BackUpMaintenanceHandler = backUpMaintenanceHandler;
             BackUpOptionsFactory = backUpOptionsFactory;
             MaintenanceOptionsFactory = maintenanceOptionsFactory;
-            ConfigPath = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "config.json"
-            );
-            if (rawConfigPraser is not null)
+            if (rawConfigParser is not null)
             {
-                RawConfigParser = rawConfigPraser;
+                RawConfigParser = rawConfigParser;
             } else
             {
                 RawConfigParser = new(BackUpOptionsFactory, MaintenanceOptionsFactory);
             }
         }
 
-        public SimpleLogManagerCLI(
+        public SLMConfigFactory(
             ConfigOptionsFactory<BackUpCondition> backUpOptionsFactory,
-            ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory,
-            BackUpHandler backUpHandler, BackUpMaintenanceHandler backUpMaintenanceHandler,
-            string configPath)
+            ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory
+        )
         {
-            BackUpHandler = backUpHandler;
-            BackUpMaintenanceHandler = backUpMaintenanceHandler;
             BackUpOptionsFactory = backUpOptionsFactory;
             MaintenanceOptionsFactory = maintenanceOptionsFactory;
-            ConfigPath = configPath;
             RawConfigParser = new(BackUpOptionsFactory, MaintenanceOptionsFactory);
         }
 
-        public void Run()
-        {
-            if (!ConfigExists(ConfigPath))
-            {
-                HandleMissingConfig(ConfigPath);
-                return;
-            }
-
-            IEnumerable<SLMConfig> configs = GetSLMConfigs();
-
-            foreach (var slmConfig in configs)
-            {
-                ExecuteConfig(slmConfig);
-            }
-        }
-
-        private bool ConfigExists(string path)
+        private bool ConfigFileExists(string path)
         {
             bool configExists = File.Exists(path);
 
@@ -141,20 +113,25 @@ namespace SimpleLogManager
             Helpers.GenerateSampleConfig(configPath);
             Console.WriteLine("Sample Configuration Created.");
         }
-
                 
-        private IEnumerable<SLMConfig> GetSLMConfigs()
+        public IEnumerable<SLMConfig> ParseRawConfig(string configPath)
         {
             List<SLMConfig> configs = [];
 
+            if (!ConfigFileExists(configPath))
+            {
+                HandleMissingConfig(configPath);
+                return configs;
+            }
+
             try
             {
-                string jsonText = File.ReadAllText(ConfigPath);
+                string jsonText = File.ReadAllText(configPath);
                 List<RawConfig>? rawConfigs = JsonSerializer.Deserialize<List<RawConfig>>(jsonText);
 
                 if (rawConfigs is null) return [];
 
-                return RawConfigParser.CreateSLMConfig(rawConfigs);
+                return RawConfigParser.Parse(rawConfigs);
 
             } catch (JsonException ex)
             {
@@ -162,15 +139,6 @@ namespace SimpleLogManager
             }
 
             return configs;
-        }
-
-        private void ExecuteConfig(SLMConfig config) {
-
-            Helpers.WriteDateTimeToLog(config.LogFileInfo.FullName);
-
-            BackUpHandler.Handle(config);
-
-            BackUpMaintenanceHandler.Handle(config);
         }
     }
 }

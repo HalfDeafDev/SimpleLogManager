@@ -57,7 +57,7 @@ using SimpleLogManager.Configs;
 
 namespace SimpleLogManager.Handlers
 {
-    public class BackUpMaintenanceHandler
+    public class MaintenanceHandler
     {
         Dictionary<MaintenanceCondition, Action<SLMConfig>> strategies = new();
 

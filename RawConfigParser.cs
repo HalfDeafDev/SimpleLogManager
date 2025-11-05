@@ -17,14 +17,14 @@ namespace SimpleLogManager
 
         public RawConfigParser(
             ConfigOptionsFactory<BackUpCondition> backUpOptionsFactory,
-            ConfigOptionsFactory<MaintenanceCondition> mainteanceOptionsFactory
+            ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory
         )
         {
             BackUpOptionsFactory = backUpOptionsFactory;
-            MaintenanceOptionsFactory = mainteanceOptionsFactory;
+            MaintenanceOptionsFactory = maintenanceOptionsFactory;
         }
 
-        private SLMConfig? RawToSLMConfig(RawConfig rawConfig)
+        private SLMConfig? Parse(RawConfig rawConfig)
         {
             FileInfo? logFileInfo = Helpers.GetLogFileInfo(rawConfig);
 
@@ -62,18 +62,17 @@ namespace SimpleLogManager
             return config;
         }
 
-        public IEnumerable<SLMConfig> RawToSLMConfigs(string configPath)
+        public IEnumerable<SLMConfig> Parse(string configPath)
         {
             List<SLMConfig> configs = [];
 
             try
             {
                 string jsonText = File.ReadAllText(configPath);
-                List<RawConfig>? rawConfigs = JsonSerializer.Deserialize<List<RawConfig>>(jsonText);
-
+                List<RawConfig>? rawConfigs = JsonSerializer.Deserialize<List<RawConfig>>(jsonText); 
                 if (rawConfigs is null) return [];
 
-                return CreateSLMConfig(rawConfigs);
+                return Parse(rawConfigs);
 
             } catch (JsonException ex)
             {
@@ -83,13 +82,13 @@ namespace SimpleLogManager
             return configs;
         }
 
-        public List<SLMConfig> CreateSLMConfig(List<RawConfig> rawConfigs)
+        public List<SLMConfig> Parse(List<RawConfig> rawConfigs)
         {
             List<SLMConfig> configs = [];
 
             foreach (RawConfig rawConfig in rawConfigs)
             {
-                SLMConfig? slmConfig = RawToSLMConfig(rawConfig);
+                SLMConfig? slmConfig = Parse(rawConfig);
                 if (slmConfig is not null)
                 {
                     configs.Add(slmConfig);

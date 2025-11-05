@@ -6,43 +6,13 @@ using SimpleLogManager.Types;
 
 namespace SimpleLogManager
 {
+    /// <summary>
+    /// An implementation of SimpleLogManager that comes pre-loaded
+    /// with Back-Up and Maintenance options and behaviors
+    /// </summary>
     public static class SimpleLogManager
     {
-        /// <summary>
-        /// This is how we actually perform the Back-Up.
-        /// </summary>
-        /// <param name="config"></param>
-        static void BackUpStrategy(SLMConfig config)
-        {
-            var sortedLogs = Helpers.GetSortedLogFiles(
-                            config.BackUpDirectoryInfo.FullName,
-                            $"{config.LogFileInfo.Extension}");
-
-            Helpers.GetLogIndex(sortedLogs.Last(), out int lastIndex);
-
-            string fileName = Path.GetFileNameWithoutExtension(config.LogFileInfo.FullName);
-
-            File.Move(
-                config.LogFileInfo.FullName,
-                Path.Combine(
-                    config.BackUpDirectoryInfo.FullName,
-                    $"{fileName}.{lastIndex + 1}{config.LogFileInfo.Extension}"
-                )
-            );
-
-            using (var fs = File.Create(config.LogFileInfo.FullName))
-            {
-                StreamWriter sw = new(fs);
-                sw.WriteLine($"<<{DateTime.Now}>>");
-                sw.Flush();
-            }
-        }
-
-        /// <summary>
-        /// Pre-Loaded Back-Up Handler
-        /// </summary>
-        /// <returns></returns>
-        static BackUpHandler CreateBackUpHandler()
+        static BackUpHandler PreloadedBackUpHandler()
         {
             BackUpHandler backUpHandler = new();
 
@@ -61,9 +31,10 @@ namespace SimpleLogManager
 
                     if (config.LogFileInfo.Length >= maxSizeInBytes)
                     {
-                        BackUpStrategy(config);
-                    }
-                    ;
+                        return true;
+                    };
+
+                    return false;
                 }
             );
 
@@ -75,8 +46,9 @@ namespace SimpleLogManager
 
                     if (DateTime.Now >= triggerTime)
                     {
-                        BackUpStrategy(config);
+                        return true;
                     }
+                    return false;
                 }
             );
 
@@ -88,21 +60,18 @@ namespace SimpleLogManager
 
                     if (DateTime.Now >= triggerTime)
                     {
-                        BackUpStrategy(config);
+                        return true;
                     }
+                    return false;
                 }
             );
 
             return backUpHandler;
         }
 
-        /// <summary>
-        /// Pre-Loaded Back-Up Maintenance Handler
-        /// </summary>
-        /// <returns></returns>
-        static BackUpMaintenanceHandler CreateBackUpMaintenanceHandler()
+        static MaintenanceHandler PreloadedMaintenanceHandler()
         {
-            BackUpMaintenanceHandler backUpMaintenanceHandler = new();
+            MaintenanceHandler backUpMaintenanceHandler = new();
 
             backUpMaintenanceHandler.AddHandler<CountConditionOptions>(
                 MaintenanceCondition.LogCount,
@@ -172,11 +141,7 @@ namespace SimpleLogManager
             return backUpMaintenanceHandler;
         }
 
-        /// <summary>
-        /// Pre-Loaded MaintenanceOptionsFactory for Back-Up Conditions
-        /// </summary>
-        /// <returns></returns>
-        static ConfigOptionsFactory<BackUpCondition> CreateBackUpOptionsFactory()
+        static ConfigOptionsFactory<BackUpCondition> PreloadedBackUpOptionsFactory()
         {
             ConfigOptionsFactory<BackUpCondition> backUpOptions = new();
 
@@ -225,11 +190,7 @@ namespace SimpleLogManager
             return backUpOptions;
         }
 
-        /// <summary>
-        /// Pre-Loaded Maintenance Options Factory
-        /// </summary>
-        /// <returns></returns>
-        static ConfigOptionsFactory<MaintenanceCondition> CreateMaintenanceOptionsFactory()
+        static ConfigOptionsFactory<MaintenanceCondition> PreloadedMaintenanceOptionsFactory()
         {
             ConfigOptionsFactory<MaintenanceCondition> maintenanceOptions = new();
 
@@ -270,25 +231,25 @@ namespace SimpleLogManager
             return maintenanceOptions;
         }
 
-        public static SimpleLogManagerCLI CreateSLM()
+        public static SLMConfigFactory CreateSLM()
         {
-            SimpleLogManagerCLI slm = new(
-                CreateBackUpOptionsFactory(),
-                CreateMaintenanceOptionsFactory(),
-                CreateBackUpHandler(),
-                CreateBackUpMaintenanceHandler()
+            SLMConfigFactory slm = new(
+                PreloadedBackUpOptionsFactory(),
+                PreloadedMaintenanceOptionsFactory(),
+                PreloadedBackUpHandler(),
+                PreloadedMaintenanceHandler()
             );
 
             return slm;
         }
 
-        public static SimpleLogManagerCLI CreateSLM(string configPath)
+        public static SLMConfigFactory CreateSLM(string configPath)
         {
-            SimpleLogManagerCLI slm = new(
-                CreateBackUpOptionsFactory(),
-                CreateMaintenanceOptionsFactory(),
-                CreateBackUpHandler(),
-                CreateBackUpMaintenanceHandler(),
+            SLMConfigFactory slm = new(
+                PreloadedBackUpOptionsFactory(),
+                PreloadedMaintenanceOptionsFactory(),
+                PreloadedBackUpHandler(),
+                PreloadedMaintenanceHandler(),
                 configPath
             );
 
