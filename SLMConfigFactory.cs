@@ -59,7 +59,8 @@ namespace SimpleLogManager
 
         public SLMConfigFactory(
             ConfigOptionsFactory<BackUpCondition> backUpOptionsFactory,
-            ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory,
+            ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory
+        )
         {
             BackUpOptionsFactory = backUpOptionsFactory;
             MaintenanceOptionsFactory = maintenanceOptionsFactory;
@@ -82,16 +83,6 @@ namespace SimpleLogManager
             }
         }
 
-        public SLMConfigFactory(
-            ConfigOptionsFactory<BackUpCondition> backUpOptionsFactory,
-            ConfigOptionsFactory<MaintenanceCondition> maintenanceOptionsFactory
-        )
-        {
-            BackUpOptionsFactory = backUpOptionsFactory;
-            MaintenanceOptionsFactory = maintenanceOptionsFactory;
-            RawConfigParser = new(BackUpOptionsFactory, MaintenanceOptionsFactory);
-        }
-
         private bool ConfigFileExists(string path)
         {
             bool configExists = File.Exists(path);
@@ -111,7 +102,12 @@ namespace SimpleLogManager
         {
             Console.WriteLine("Creating Sample Config File.");
             Helpers.GenerateSampleConfig(configPath);
-            Console.WriteLine("Sample Configuration Created.");
+            Console.WriteLine($"Sample Configuration Created at:\n\t{configPath}");
+        }
+
+        public IEnumerable<SLMConfig> ParseRawConfig()
+        {
+            return ParseRawConfig(DefaultConfigPath());
         }
                 
         public IEnumerable<SLMConfig> ParseRawConfig(string configPath)

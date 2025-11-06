@@ -10,7 +10,7 @@ namespace SimpleLogManager
     /// An implementation of SimpleLogManager that comes pre-loaded
     /// with Back-Up and Maintenance options and behaviors
     /// </summary>
-    public static class SimpleLogManager
+    public class SimpleLogManager
     {
         static BackUpHandler PreloadedBackUpHandler()
         {
@@ -32,7 +32,8 @@ namespace SimpleLogManager
                     if (config.LogFileInfo.Length >= maxSizeInBytes)
                     {
                         return true;
-                    };
+                    }
+                    ;
 
                     return false;
                 }
@@ -111,7 +112,7 @@ namespace SimpleLogManager
                                 folderSize += file.Length;
 
                         if (shouldDelete)
-                                file.Delete();
+                            file.Delete();
                     }
                 }
             );
@@ -206,7 +207,7 @@ namespace SimpleLogManager
             maintenanceOptions.TryAdd(MaintenanceCondition.FolderSize, (rawConfig) =>
             {
                 if (
-                    rawConfig.MaxFolderSize is int folderSize && 
+                    rawConfig.MaxFolderSize is int folderSize &&
                     ByteConversion.StringToByteSize(rawConfig.MaxFolderSizeUnit) is ByteSize byteSize
                 )
                 {
@@ -231,29 +232,58 @@ namespace SimpleLogManager
             return maintenanceOptions;
         }
 
-        public static SLMConfigFactory CreateSLM()
-        {
-            SLMConfigFactory slm = new(
-                PreloadedBackUpOptionsFactory(),
-                PreloadedMaintenanceOptionsFactory(),
-                PreloadedBackUpHandler(),
-                PreloadedMaintenanceHandler()
-            );
+        SLMConfigFactory SLMConfigFactory { get; set; }
+        SLMConfigExecutor SLMConfigExecutor { get; set; }
 
-            return slm;
+        public SimpleLogManager()
+        {
+            SLMConfigFactory = CreateSLMConfigFactory();
+            SLMConfigExecutor = CreateSLMConfigExecutor();
         }
 
-        public static SLMConfigFactory CreateSLM(string configPath)
+        public void Execute()
         {
-            SLMConfigFactory slm = new(
-                PreloadedBackUpOptionsFactory(),
-                PreloadedMaintenanceOptionsFactory(),
-                PreloadedBackUpHandler(),
+            Execute(null);
+        }
+
+        public void Execute(string? configPath)
+        {
+            List<SLMConfig> slmConfigs;
+            
+            if (configPath is not null)
+            {
+                slmConfigs = SLMConfigFactory.ParseRawConfig(configPath).ToList();
+            } else
+            {
+                slmConfigs = SLMConfigFactory.ParseRawConfig().ToList();
+            }
+
+            foreach (var slmConfig in slmConfigs)
+            {
+                SLMConfigExecutor.ExecuteConfig(slmConfig);
+            }
+        }
+
+        static SLMConfigExecutor CreateSLMConfigExecutor()
+        {
+            SLMConfigExecutor executor = new(
                 PreloadedMaintenanceHandler(),
-                configPath
+                PreloadedBackUpHandler(),
+                new BackUpStrategy()
+            );
+
+            return executor;
+        }
+
+        static SLMConfigFactory CreateSLMConfigFactory()
+        {
+            SLMConfigFactory slm = new(
+                PreloadedBackUpOptionsFactory(),
+                PreloadedMaintenanceOptionsFactory()
             );
 
             return slm;
         }
+
     }
 }

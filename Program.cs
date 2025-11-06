@@ -39,9 +39,9 @@ namespace SimpleLogManager
     {
         public static void Run()
         {
-            var slm = SimpleLogManager.CreateSLM();
+            var slm = new SimpleLogManager();
 
-            slm.Run();
+            slm.Execute();
         }
         
         public static void TempTesting()
@@ -66,8 +66,7 @@ namespace SimpleLogManager
             //    4, ByteSize.KiloByte);
 
             // Run();
-
-            TempTesting();
+            Run();
         }
     }
 }
