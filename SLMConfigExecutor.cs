@@ -27,7 +27,7 @@ namespace SimpleLogManager
 
         public void ExecuteConfig(SLMConfig config)
         {
-            Helpers.WriteDateTimeToLog(config.LogFileInfo.FullName);
+            Helpers.WriteStartMessageToLog(config);
 
             BackUpHandler.Handle(config, BackUpStrategy);
 

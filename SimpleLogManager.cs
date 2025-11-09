@@ -7,8 +7,8 @@ using SimpleLogManager.Types;
 namespace SimpleLogManager
 {
     /// <summary>
-    /// An implementation of SimpleLogManager that comes pre-loaded
-    /// with Back-Up and Maintenance options and behaviors
+    /// An implementation of the SimpleLogManager codebase 
+    /// that comes pre-loaded with Back-Up and Maintenance options and behaviors
     /// </summary>
     public class SimpleLogManager
     {

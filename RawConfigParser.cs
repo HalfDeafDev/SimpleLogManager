@@ -48,17 +48,21 @@ namespace SimpleLogManager
             MaintenanceCondition maintenanceCondition = ParseMaintenanceCondition(rawConfig.MaintenanceCondition);
             IMaintenanceOptions maintenanceOptions = ParseMaintenanceOptions(maintenanceCondition, rawConfig);
 
-            // TODO: Same thing for No Maintenance Options
+            string startMessage = rawConfig.StartMessage is not null ? rawConfig.StartMessage : $"<<{DateTime.Now.ToString()}>>";
 
-            SLMConfig config = new(
+            SLMConfigValues configValues = new(
                 logFileInfo,
                 backupDirectoryInfo,
                 backupCondition,
                 backupOptions,
                 maintenanceCondition,
-                maintenanceOptions
+                maintenanceOptions,
+                startMessage
             );
 
+
+            // TODO: Same thing for No Maintenance Options
+            SLMConfig config = new(configValues);
             return config;
         }
 

@@ -193,6 +193,11 @@ namespace SimpleLogManager
             await WriteToLog(filePath, $"<<{DateTime.Now.ToString()}>>");
         }
 
+        public static async void WriteStartMessageToLog(SLMConfig config)
+        {
+            await WriteToLog(config.LogFileInfo.FullName, config.StartMessage);
+        }
+
         public static void WriteDateTimeToLog(FileInfo fileInfo)
         {
             WriteDateTimeToLog(fileInfo.FullName);

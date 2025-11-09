@@ -39,6 +39,7 @@ namespace SimpleLogManager.Configs
         int? NumOfLogs = null,
         int? Interval = null,
         string? IntervalType = null,
-        string? ByteSizeType = null
+        string? ByteSizeType = null,
+        string? StartMessage = null
     );
 }

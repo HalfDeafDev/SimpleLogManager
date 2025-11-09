@@ -9,6 +9,16 @@ using System.Threading.Tasks;
 
 namespace SimpleLogManager.Configs
 {
+    public record SLMConfigValues(
+        FileInfo LogFile,
+        DirectoryInfo BackUpDirectory,
+        BackUpCondition BackUpCondition,
+        IMaintenanceOptions BackUpOptions,
+        MaintenanceCondition MaintenanceCondition,
+        IMaintenanceOptions MaintenanceOptions,
+        string StartMessage
+    );
+
     /// <summary>
     /// The concrete Configuration object with defined Conditions, Option Groups, and Paths
     /// </summary>
@@ -21,16 +31,17 @@ namespace SimpleLogManager.Configs
         public IMaintenanceOptions BackUpOptions { get; set; }
         public IMaintenanceOptions MaintenanceOptions { get; set; }
 
-        public SLMConfig(FileInfo logFile, DirectoryInfo backUpDirectory, 
-            BackUpCondition backUpCondition, IMaintenanceOptions backUpOptions,
-            MaintenanceCondition maintenanceCondition, IMaintenanceOptions maintenanceOptions)
+        public string StartMessage { get; set; }
+
+        public SLMConfig(SLMConfigValues configValues)
         {
-            LogFileInfo = logFile;
-            BackUpDirectoryInfo = backUpDirectory;
-            BackUpCondition = backUpCondition;
-            BackUpOptions = backUpOptions;
-            MaintenanceCondition = maintenanceCondition;
-            MaintenanceOptions = maintenanceOptions;
+            LogFileInfo = configValues.LogFile;
+            BackUpDirectoryInfo = configValues.BackUpDirectory;
+            BackUpCondition = configValues.BackUpCondition;
+            BackUpOptions = configValues.BackUpOptions;
+            MaintenanceCondition = configValues.MaintenanceCondition;
+            MaintenanceOptions = configValues.MaintenanceOptions;
+            StartMessage = configValues.StartMessage;
         }
     }
 }
