@@ -22,6 +22,14 @@ namespace SimpleLogManager.Configs
         string EndMessage
     );
 
+    public record SLMConfigMeta(
+        string FileName,
+        string FilePath,
+        string BackUpDirectory,
+        DateTime CurrentDateTime,
+        DateTime LastWriteTime
+    );
+
     /// <summary>
     /// The concrete Configuration object with defined Conditions, Option Groups, and Paths
     /// </summary>
@@ -33,6 +41,8 @@ namespace SimpleLogManager.Configs
         public MaintenanceCondition MaintenanceCondition { get; set; }
         public IMaintenanceOptions BackUpOptions { get; set; }
         public IMaintenanceOptions MaintenanceOptions { get; set; }
+
+        public SLMConfigMeta Meta { get; set; }
 
         public bool WriteStartMessage { get; set; }
         public string StartMessage { get; set; }
@@ -51,6 +61,13 @@ namespace SimpleLogManager.Configs
             StartMessage = configValues.StartMessage;
             WriteEndMessage = configValues.WriteEndMessage;
             EndMessage = configValues.EndMessage;
+            Meta = new(
+                LogFileInfo.Name,
+                LogFileInfo.FullName,
+                BackUpDirectoryInfo.FullName,
+                DateTime.Now,
+                LogFileInfo.LastWriteTime
+            );
         }
     }
 }
