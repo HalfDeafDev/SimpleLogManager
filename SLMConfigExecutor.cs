@@ -27,11 +27,15 @@ namespace SimpleLogManager
 
         public void ExecuteConfig(SLMConfig config)
         {
-            Helpers.WriteStartMessageToLog(config);
+            if (config.WriteStartMessage)
+                Helpers.WriteStartMessageToLog(config);
 
             BackUpHandler.Handle(config, BackUpStrategy);
 
             MaintenanceHandler.Handle(config);
+
+            if (config.WriteEndMessage)
+                Helpers.WriteEndMessageToLog(config);
         }
 
     }

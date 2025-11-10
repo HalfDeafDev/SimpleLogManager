@@ -16,7 +16,10 @@ namespace SimpleLogManager.Configs
         IMaintenanceOptions BackUpOptions,
         MaintenanceCondition MaintenanceCondition,
         IMaintenanceOptions MaintenanceOptions,
-        string StartMessage
+        bool WriteStartMessage,
+        string StartMessage,
+        bool WriteEndMessage,
+        string EndMessage
     );
 
     /// <summary>
@@ -31,7 +34,10 @@ namespace SimpleLogManager.Configs
         public IMaintenanceOptions BackUpOptions { get; set; }
         public IMaintenanceOptions MaintenanceOptions { get; set; }
 
+        public bool WriteStartMessage { get; set; }
         public string StartMessage { get; set; }
+        public bool WriteEndMessage { get; set; }
+        public string EndMessage { get; set; }
 
         public SLMConfig(SLMConfigValues configValues)
         {
@@ -41,7 +47,10 @@ namespace SimpleLogManager.Configs
             BackUpOptions = configValues.BackUpOptions;
             MaintenanceCondition = configValues.MaintenanceCondition;
             MaintenanceOptions = configValues.MaintenanceOptions;
+            WriteStartMessage = configValues.WriteStartMessage;
             StartMessage = configValues.StartMessage;
+            WriteEndMessage = configValues.WriteEndMessage;
+            EndMessage = configValues.EndMessage;
         }
     }
 }

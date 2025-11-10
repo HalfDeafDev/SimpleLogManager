@@ -48,7 +48,11 @@ namespace SimpleLogManager
             MaintenanceCondition maintenanceCondition = ParseMaintenanceCondition(rawConfig.MaintenanceCondition);
             IMaintenanceOptions maintenanceOptions = ParseMaintenanceOptions(maintenanceCondition, rawConfig);
 
+            bool writeStartMessage = ParseBoolean(rawConfig.WriteStartMessage);
             string startMessage = rawConfig.StartMessage is not null ? rawConfig.StartMessage : $"<<{DateTime.Now.ToString()}>>";
+
+            bool writeEndMessage = ParseBoolean(rawConfig.WriteEndMessage);
+            string endMessage = rawConfig.EndMessage is not null ? rawConfig.EndMessage : $">>{DateTime.Now.ToString()}<<";
 
             SLMConfigValues configValues = new(
                 logFileInfo,
@@ -57,13 +61,34 @@ namespace SimpleLogManager
                 backupOptions,
                 maintenanceCondition,
                 maintenanceOptions,
-                startMessage
+                writeStartMessage,
+                startMessage,
+                writeEndMessage,
+                endMessage
             );
 
 
             // TODO: Same thing for No Maintenance Options
             SLMConfig config = new(configValues);
             return config;
+        }
+
+        private bool ParseBoolean(string? value)
+        {
+            if (value is null) return false;
+
+            return value.ToLower() switch
+            {
+                "true"
+                or "t"
+                or "yes"
+                or "y" => true,
+                "false"
+                or "f"
+                or "no"
+                or "n" 
+                or _ => false
+            };
         }
 
         public IEnumerable<SLMConfig> Parse(string configPath)

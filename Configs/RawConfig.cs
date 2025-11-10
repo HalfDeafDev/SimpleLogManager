@@ -40,6 +40,9 @@ namespace SimpleLogManager.Configs
         int? Interval = null,
         string? IntervalType = null,
         string? ByteSizeType = null,
-        string? StartMessage = null
+        string? StartMessage = null,
+        string? WriteStartMessage = "True",
+        string? EndMessage = null,
+        string? WriteEndMessage = "False"
     );
 }

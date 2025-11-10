@@ -202,7 +202,10 @@ namespace SimpleLogManager
         {
             WriteDateTimeToLog(fileInfo.FullName);
         }
-
+        public static async void WriteEndMessageToLog(SLMConfig config)
+        {
+            await WriteToLog(config.LogFileInfo.FullName, config.EndMessage);
+        }
         public static DateTime ChangeDateByInterval(
             ChangeDateByOperation operation,
             DateTime startingDate,
@@ -249,5 +252,7 @@ namespace SimpleLogManager
         {
             return ChangeDateByInterval(ChangeDateByOperation.Subtract, startingDate, interval, intervalType);
         }
+
+        
     }
 }
