@@ -30,25 +30,26 @@ Note: More than one configuration can exist in the `config.json`, the only cavea
 
 Below are the options available to you
 
-|Option|For|Required|Default|Values|Description|
-|-|-|-|-|
-|LogFilePath|-|Yes|None|Full & Relative Paths|The path of the log file|
-|BackUpDirectory|Back Up|Yes|None|Full & Relative Paths|The path of the directory back-up should be stored in|
-|BackUpCondition|Back Up|Yes|None|`FileSize`, `LastModDate`, `CreationDate`, `None`|The condition that should cause a back up to occur|
-|MaintenanceCondition|Maintenance|No|Null|`LogCount`, `FolderSize`, `CreationDate`, `None`|The condition in which maintenance on back ups should occur|
-|SupressMaintenance|Maintenance|No|Null|`True`, `False`|Whether or not to suppress maintenance task|
-|MaxFileSize|Back Up|No|Null|Integer|The maximum size of the log file before being backed up|
-|MaxFileSizeUnit|Back Up|No|Null|`B`, `KB`, `MB`, `GB`|The unit associated with the Max File Size value|
-|MaxFolderSize|Maintenance|No|Null|Integer| The maximum size of the back up directory before purging the oldest backup|
-|MaxFolderSizeUnit|Maintenance|No|Null|`B`, `KB`, `MB`, `GB`|The unit associated with the Max Folder Size value|
-|NumOfLogs|Maintenance|No|Null|Integer| The maximum number of logs before purging the oldest backup| 
-|Interval|Back Up|No|Null|Integer|The number of days, weeks, months, etc. before backing up log file|
-|IntervalType|Back Up|No|Null|`Seconds`, `Minutes`, `Hours`, `Days`, `Months`, `Years`|The unit associated with the Interval Back Up Condition|
-|ByteSizeType|-|No|Binary|`Binary`, `Decimal`|Whether 1000B = 1KB (Decimal) or 1024B = 1KB (Binary)|
-|StartMessage|-|No|"<<$CurrentDateTime>>"|Formatted String|The message that is added to the log file at the start of a run|
-|WriteStartMessage|-|No|Boolean Values|`True`, `T`, `Yes`, `Y`, `False`, `F`, `No`, `N`|Whether or not to write the Start Message|
-|EndMessage|-|No|""|Formatted String|The message that is added to the log file at the end of the run|
-|WriteEndMessage|-|No|""|`True`, `T`, `Yes`, `Y`, `False`, `F`, `No`, `N`|Whether or not to write the End Message|
+| Option | For | Required | Default | Values | Description |
+| ------- | --- | -------- | -------- | ------- | ----------- |
+| LogFilePath | - | Yes | None | Full & Relative Paths | The path of the log file |
+| BackUpDirectory | Back Up | Yes | None | Full & Relative Paths | The path of the directory back-up should be stored in |
+| BackUpCondition | Back Up | Yes | None | `FileSize`, `LastModDate`, `CreationDate`, `None` | The condition that should cause a back up to occur |
+| MaintenanceCondition | Maintenance | No | Null | `LogCount`, `FolderSize`, `CreationDate`, `None` | The condition in which maintenance on back ups should occur |
+| SupressMaintenance | Maintenance | No | Null | `True`, `False` | Whether or not to suppress maintenance task |
+| MaxFileSize | Back Up | No | Null | Integer | The maximum size of the log file before being backed up |
+| MaxFileSizeUnit | Back Up | No | Null | `B`, `KB`, `MB`, `GB` | The unit associated with the Max File Size value |
+| MaxFolderSize | Maintenance | No | Null | Integer | The maximum size of the back up directory before purging the oldest backup |
+| MaxFolderSizeUnit | Maintenance | No | Null | `B`, `KB`, `MB`, `GB` | The unit associated with the Max Folder Size value |
+| NumOfLogs | Maintenance | No | Null | Integer | The maximum number of logs before purging the oldest backup |
+| Interval | Back Up | No | Null | Integer | The number of days, weeks, months, etc. before backing up log file |
+| IntervalType | Back Up | No | Null | `Seconds`, `Minutes`, `Hours`, `Days`, `Months`, `Years` | The unit associated with the Interval Back Up Condition |
+| ByteSizeType | - | No | Binary | `Binary`, `Decimal` | Whether 1000B = 1KB (Decimal) or 1024B = 1KB (Binary) |
+| StartMessage | - | No | "<<$CurrentDateTime>>" | Formatted String | The message that is added to the log file at the start of a run |
+| WriteStartMessage | - | No | Boolean Values | `True`, `T`, `Yes`, `Y`, `False`, `F`, `No`, `N` | Whether or not to write the Start Message |
+| EndMessage | - | No | "" | Formatted String | The message that is added to the log file at the end of the run |
+| WriteEndMessage | - | No | "" | `True`, `T`, `Yes`, `Y`, `False`, `F`, `No`, `N` | Whether or not to write the End Message |
+
 
 ### Formatted Messages
 
